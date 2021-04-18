@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,17 +9,20 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GUI extends JFrame{
-	private Board enemyBoard,yourBoard;
+	private Board enemyBoard;
+	private FriendlyBoard yourBoard;
 	private JButton[][] buttons;
 	
 	public GUI(){
 		//making your board(den kanei tipota pros to parwn mono sto deutero to antipalo board akoune ta buttons... logika tha ginei kapws alliws to board tou paikti)
-		yourBoard = new Board();
+		yourBoard = new FriendlyBoard();
 		yourBoard.setBounds(50,50,300,300);
 		//making enemy board
 		enemyBoard = new Board();
 		enemyBoard.setBounds(650,50,300,300);
 		
+		
+	
 		this.setLayout(null);
 		this.add(yourBoard);
 		this.add(enemyBoard);
@@ -54,6 +58,24 @@ public class GUI extends JFrame{
 			add(buttons[i][j]);
 			}
 		}
+		}
+	}
+	
+	class FriendlyBoard extends JPanel{
+		@Override
+		public void paint(Graphics g) {
+			for(int i=0; i<10; i++) {
+				for(int j=0; j<10; j++) {
+					//conditions gia repaint
+					if(true) {
+					g.setColor(Color.blue);
+					}
+					else {
+						g.setColor(Color.red);
+					}
+					g.fillRect(j*30, i*30, 30, 30);
+				}
+			}
 		}
 	}
 }

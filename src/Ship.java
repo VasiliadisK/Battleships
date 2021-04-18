@@ -18,5 +18,5 @@ public abstract class Ship {
 	public void PrintShipName () {
 		System.out.println(Name);
 	}
-
+	
 }
