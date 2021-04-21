@@ -85,6 +85,15 @@ public class GUI extends JFrame{
 									}
 								}
 								yourBoard.repaint();
+								//check an ola ta ploia einai dead.... tha alla3ei otan mpoun player klaseis
+								int counter = 0;
+								for(Ship ship: ships) {
+									if(ship.isDead()==true)
+										counter++;
+									if(counter == 5)
+										System.out.println("Game over!");
+								}
+								
 							}}}}	
 			});
 			add(buttons[i][j]);

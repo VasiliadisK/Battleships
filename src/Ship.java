@@ -4,8 +4,8 @@ public abstract class Ship {
 	 int hp;
 	 int length;
 	//Suntetagmenes sto pinaka
-	 public int Xpos;
-	 public int Ypos;
+	 int Xpos;
+	 int Ypos;
 	//Suntetagmenes gia to friendlyBoard
 	 int x,y;
 	 String name;
