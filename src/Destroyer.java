@@ -1,8 +1,8 @@
 
 public class Destroyer extends Ship{
 
-	public Destroyer (int hp , int length, int Xpos , int Ypos , String Name) {
-		super(hp,length,Xpos,Ypos,Name);
+	public Destroyer (int ShipXpos, int ShipYpos,boolean isVertical,String aName,int length) {
+		super(ShipXpos,ShipYpos,isVertical,aName,length);
 	}
 	
 	public void PrintShipName () {

@@ -2,8 +2,8 @@
 public class Battleship extends Ship{
 	
 	
-	public Battleship (int hp , int length, int Xpos , int Ypos , String Name) {
-		super(hp,length,Xpos,Ypos,Name);
+	public Battleship (int ShipXpos, int ShipYpos,boolean isVertical,String aName,int length) {
+		super(ShipXpos,ShipYpos,isVertical,aName,length);
 	}
 	
 	public void PrintShipName () {

@@ -1,8 +1,8 @@
 
 public class Cruiser extends Ship{
 	
-	public Cruiser (int hp , int length, int Xpos , int Ypos , String Name) {
-		super(hp,length,Xpos,Ypos,Name);
+	public Cruiser (int ShipXpos, int ShipYpos,boolean isVertical,String aName,int length) {
+		super(ShipXpos,ShipYpos,isVertical,aName,length);
 	}
 	
 	public void PrintShipName () {
