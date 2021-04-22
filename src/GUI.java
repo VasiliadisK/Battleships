@@ -23,11 +23,12 @@ public class GUI extends JFrame{
 	private ImageIcon tempIcon;
 	private Image image;
 	private boolean enabled = true;
-	private Ship[] ships;
+	private Player player1,player2,currentPlayer;
 	private Ship currentShip;
 	
-	public GUI(Ship[] ships){
-		this.ships = ships;
+	public GUI(Player player1,Player player2){
+		this.player1 = player1;
+		this.player2 = player2;
 		//making your board(den kanei tipota pros to parwn mono sto deutero to antipalo board akoune ta buttons... logika tha ginei kapws alliws to board tou paikti)
 		yourBoard = new FriendlyBoard();
 		yourBoard.setBounds(50,50,300,300);
@@ -79,21 +80,14 @@ public class GUI extends JFrame{
 								//tipota endiaferon prws to parwn
 								buttons[i][j].setEnabled(false);
 								buttons[i][j].setBackground(Color.gray);
-								for(Ship ship: ships) {
+								for(Ship ship: player1.getShips()) {
 									if(ship.isHit(i, j)) {
 										buttons[i][j].setBackground(Color.red);
 									}
 								}
 								yourBoard.repaint();
-								//check an ola ta ploia einai dead.... tha alla3ei otan mpoun player klaseis
-								int counter = 0;
-								for(Ship ship: ships) {
-									if(ship.isDead()==true)
-										counter++;
-									if(counter == 5)
-										System.out.println("Game over!");
-								}
-								
+								if(!player1.hasShips())
+									System.out.println("Game is over!");
 							}}}}	
 			});
 			add(buttons[i][j]);
@@ -126,7 +120,7 @@ public class GUI extends JFrame{
 					g.drawRect(j*30, i*30, 30, 30);
 				}
 			}
-			for(Ship ship: ships) {
+			for(Ship ship: player1.getShips()) {
 			tempIcon = new ImageIcon("images\\" + ship.getName() + ".png");
 			image = tempIcon.getImage();
 			image = getScaledImage(image,30,ship.getLength()*30);
@@ -147,7 +141,7 @@ public class GUI extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e) {
 					if(enabled == true) {
-					for(Ship ship: ships) {
+					for(Ship ship: player1.getShips()) {
 						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30)) {
 							currentShip = ship;
 						}
@@ -166,7 +160,7 @@ public class GUI extends JFrame{
 				public void mouseDragged(MouseEvent e) {
 					if(enabled == true) {
 					if(currentShip!=null) {
-						if(e.getX()<=300 && e.getY()<=300 && e.getX()>=0 && e.getY()>=0) {
+						if(e.getX()<300 && e.getY()<300 && e.getX()>=0 && e.getY()>=0) {
 						currentShip.move(e.getY()/30, e.getX()/30);
 						repaint();
 						}
