@@ -142,8 +142,8 @@ public class GUI extends JFrame{
 			addMouseListener(new MouseListener(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					//το board εχει αναποδα τα Χ και y δηλαδη χ=y και y=x
-					//+30 για να καλυπτει ολο το box 
+					//To board exei anapoda ta x kai y diladi y=x kai y=x
+					//+30 gia na kaluptei olo to block
 					int Xpos=e.getY();
 					int Ypos=e.getX();
 
@@ -152,10 +152,10 @@ public class GUI extends JFrame{
 					for(Ship ship:player1.getShips())
 					{	
 				System.out.println(ship.getName()+" "+ship.getX()+" "+ship.getY()+" "+" "+Xpos+" "+Ypos);
-				//αν ο χρηστης κανει κλικ πανω σε κουτι που βρισκεται πλοιο θα επιλεγεται (το πλοιο)
-														//30(μεγεθος κουτιου)*των αριθμο των κουτιων που βρισκεται το πλοιο 
-														//αναλογα με το μεγεθός του πλοιου(length)
-					if((Xpos>=ship.getX() && Xpos<=ship.getX()+(30*ship.getLength())) 
+				//An o xristis kanei klik panw se kouti pou brisketai ploio tha epilegetai to ploio
+														//30(megethos koutiou)* twn arithmo twn koutiwn pou brisketai to ploio
+														//analoga me to megethos tou ploiou(length)
+					if((Xpos>=ship.getX() && Xpos<=ship.getX()+(30*ship.getLength()))
 							&& (Ypos>=ship.getY() && Ypos<=ship.getY()+30))
 							System.out.println("Ship");
 						else
@@ -190,9 +190,9 @@ public class GUI extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					if(enabled == true) {
 					for(Ship ship: player1.getShips()) {
-						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30)) {
+						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30) && e.getY()>=ship.getX() && e.getY()<=ship.getX() + (ship.getLength()*30)) {
+							System.out.println(e.getY() + " " + ship.getY());
 							currentShip = ship;
-							
 						}
 					}
 				}

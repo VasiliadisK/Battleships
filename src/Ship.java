@@ -9,6 +9,7 @@ public abstract class Ship {
 	//Suntetagmenes gia to friendlyBoard
 	 int x,y;
 	 String name;
+	 int lastCell;
 	boolean vertical;
 	
 	public Ship (int ShipXpos, int ShipYpos,boolean isVertical,String aName,int length) {
@@ -60,6 +61,12 @@ public abstract class Ship {
 		Ypos = newY;
 		x = Xpos * 30;
 		y = Ypos * 30;
+	}
+	
+	public int getLastCell() {
+		lastCell = x + (length * 30);
+		
+		return lastCell;
 	}
 	
 	public void PrintShipName () {
