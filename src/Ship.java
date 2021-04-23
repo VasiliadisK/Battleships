@@ -22,6 +22,22 @@ public abstract class Ship {
 		y=Ypos*30;
 	}
 	
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public void setXpos(int xpos) {
+		Xpos = xpos;
+	}
+
+	public void setYpos(int ypos) {
+		Ypos = ypos;
+	}
+
 	public int getLength() {
 		return length;
 	}
@@ -54,6 +70,17 @@ public abstract class Ship {
 		if(vertical==true) {
 			for(int i=Xpos; i<(Xpos+length); i++) {
 				if(hitX == i && hitY==Ypos) {
+					hp--;
+					return true;
+				}
+			}
+		}
+		else 
+		{
+			for(int j=Ypos; j<(Ypos+length);j++)
+			{
+				if(hitY == j && hitX == Xpos)
+				{
 					hp--;
 					return true;
 				}

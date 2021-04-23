@@ -25,6 +25,8 @@ public class GUI extends JFrame{
 	private boolean enabled = true;
 	private Player player1,player2,currentPlayer;
 	private Ship currentShip;
+	//button gia rotate ploiou
+			JButton rotateShip = new JButton("Rotate");
 	
 	public GUI(Player player1,Player player2){
 		this.player1 = player1;
@@ -46,8 +48,15 @@ public class GUI extends JFrame{
 				PlaceShips.setVisible(false);
 			}
 		});
+		
 		PlaceShips.setBounds(450,500,100,40);
 		
+		
+		
+		rotateShip.setBounds(450,80,100,40);
+		
+		
+		this.add(rotateShip);
 		
 		this.setLayout(null);
 		this.add(yourBoard);
@@ -57,6 +66,8 @@ public class GUI extends JFrame{
 		this.setVisible(true);
 		this.setSize(1000,600);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+	
 	}
 	
 	
@@ -130,7 +141,44 @@ public class GUI extends JFrame{
 			
 			addMouseListener(new MouseListener(){
 				@Override
-				public void mouseClicked(MouseEvent e) {}
+				public void mouseClicked(MouseEvent e) {
+					//το board εχει αναποδα τα Χ και y δηλαδη χ=y και y=x
+					//+30 για να καλυπτει ολο το box 
+					int Xpos=e.getY();
+					int Ypos=e.getX();
+
+					
+					
+					for(Ship ship:player1.getShips())
+					{	
+				System.out.println(ship.getName()+" "+ship.getX()+" "+ship.getY()+" "+" "+Xpos+" "+Ypos);
+				//αν ο χρηστης κανει κλικ πανω σε κουτι που βρισκεται πλοιο θα επιλεγεται (το πλοιο)
+														//30(μεγεθος κουτιου)*των αριθμο των κουτιων που βρισκεται το πλοιο 
+														//αναλογα με το μεγεθός του πλοιου(length)
+					if((Xpos>=ship.getX() && Xpos<=ship.getX()+(30*ship.getLength())) 
+							&& (Ypos>=ship.getY() && Ypos<=ship.getY()+30))
+							System.out.println("Ship");
+						else
+							System.out.println("no Ship");
+					
+				}
+				rotateShip.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						currentShip.vertical=false;
+						if(Ypos>=30*currentShip.getLength())
+							currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
+						
+						System.out.println("New Ypos"+(Ypos-(30*(currentShip.getLength()-1))));
+						System.out.println(Xpos+"\n");
+						
+						
+											
+					}
+				
+				});
+				}
 
 				@Override
 				public void mouseEntered(MouseEvent e) {}
@@ -144,14 +192,18 @@ public class GUI extends JFrame{
 					for(Ship ship: player1.getShips()) {
 						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30)) {
 							currentShip = ship;
+							
 						}
 					}
 				}
 				}
+				
+	
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					currentShip=null;
+						
+					
 				}
 				
 			});
