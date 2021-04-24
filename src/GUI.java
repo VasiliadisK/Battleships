@@ -157,7 +157,6 @@ public class GUI extends JFrame{
 					
 					for(Ship ship:player1.getShips())
 					{	
-				System.out.println(ship.getName()+" "+ship.getX()+" "+ship.getY()+" "+" "+Xpos+" "+Ypos);
 				//An o xristis kanei klik panw se kouti pou brisketai ploio tha epilegetai to ploio
 														//30(megethos koutiou)* twn arithmo twn koutiwn pou brisketai to ploio
 														//analoga me to megethos tou ploiou(length)
@@ -173,8 +172,10 @@ public class GUI extends JFrame{
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						currentShip.vertical=false;
-						if(Ypos>=30*currentShip.getLength())
+						if(Ypos>=30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
+							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
+						}
 						
 						System.out.println("New Ypos"+(Ypos-(30*(currentShip.getLength()-1))));
 						System.out.println(Xpos+"\n");
