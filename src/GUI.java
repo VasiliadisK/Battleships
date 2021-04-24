@@ -132,9 +132,15 @@ public class GUI extends JFrame{
 				}
 			}
 			for(Ship ship: player1.getShips()) {
+				if(ship.vertical==true)
 			tempIcon = new ImageIcon("images\\" + ship.getName() + ".png");
+				else
+					tempIcon = new ImageIcon("images\\Rotated" + ship.getName() + ".png");
 			image = tempIcon.getImage();
+				if(ship.vertical==true)
 			image = getScaledImage(image,30,ship.getLength()*30);
+			else
+				image = getScaledImage(image,ship.getLength()*30,30);
 			Graphics2D g2d = (Graphics2D) g.create();
 			g2d.drawImage(image,ship.getY(),ship.getX(),this);
 			}
@@ -172,7 +178,7 @@ public class GUI extends JFrame{
 						
 						System.out.println("New Ypos"+(Ypos-(30*(currentShip.getLength()-1))));
 						System.out.println(Xpos+"\n");
-						
+						repaint();
 						
 											
 					}
@@ -191,7 +197,6 @@ public class GUI extends JFrame{
 					if(enabled == true) {
 					for(Ship ship: player1.getShips()) {
 						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30) && e.getY()>=ship.getX() && e.getY()<=ship.getX() + (ship.getLength()*30)) {
-							System.out.println(e.getY() + " " + ship.getY());
 							currentShip = ship;
 						}
 					}
@@ -202,7 +207,6 @@ public class GUI extends JFrame{
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-						
 					
 				}
 				
