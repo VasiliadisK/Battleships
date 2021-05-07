@@ -162,7 +162,7 @@ public class GUI extends JFrame{
 														//analoga me to megethos tou ploiou(length)
 					if((Xpos>=ship.getX() && Xpos<=ship.getX()+(30*ship.getLength()))
 							&& (Ypos>=ship.getY() && Ypos<=ship.getY()+30))
-							System.out.println("Ship");
+							System.out.println("Ship"+" "+Ypos);
 						else
 							System.out.println("no Ship");
 					
@@ -171,17 +171,28 @@ public class GUI extends JFrame{
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
+						
+					if(currentShip.vertical==true) {	
 						currentShip.vertical=false;
 						if(Ypos>=30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
 							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
 						}
-						
-						System.out.println("New Ypos"+(Ypos-(30*(currentShip.getLength()-1))));
-						System.out.println(Xpos+"\n");
+						repaint();
+					}
+					else if(currentShip.vertical==false) {
+						currentShip.vertical=true;
+						if(Ypos>=30*currentShip.getLength()) {
+							currentShip.setYpos(Ypos+(30*(currentShip.getLength()-1)));
+							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
+							
+						}
 						repaint();
 						
-											
+					}
+					
+					//System.out.println(Xpos+"\n");
+										
 					}
 				
 				});
