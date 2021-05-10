@@ -218,27 +218,17 @@ public class GUI extends JFrame{
 			addMouseListener(new MouseListener(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					//To board exei anapoda ta x kai y diladi y=x kai y=x
 					//+30 gia na kaluptei olo to block
-					int Xpos=e.getY();
-					int Ypos=e.getX();
+					int Ypos=e.getY();
+					int Xpos=e.getX();
 
+					System.out.println("Y:"+e.getY());
+					System.out.println("X:"+e.getX());
 					
-					
-					for(Ship ship:currentPlayer.getShips())
-					{
 				//An o xristis kanei klik panw se kouti pou brisketai ploio tha epilegetai to ploio
 														//30(megethos koutiou)* twn arithmo twn koutiwn pou brisketai to ploio
 														//analoga me to megethos tou ploiou(length)
-					if((Xpos>=ship.getX() && Xpos<=ship.getX()+(30*ship.getLength()))
-							&& (Ypos>=ship.getY() && Ypos<=ship.getY()+30)) {
-						currentShip=ship;
-							System.out.println("Ship"+" "+Ypos);
-					}
-						else
-							System.out.println("no Ship");
-					
-				}
+				
 				rotateShip.addActionListener(new ActionListener() {
 
 					@Override
@@ -246,7 +236,7 @@ public class GUI extends JFrame{
 						
 					if(currentShip.vertical==true) {	
 						currentShip.vertical=false;
-						if(Ypos>=30*currentShip.getLength()) {
+						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
 							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
 						}
@@ -254,13 +244,14 @@ public class GUI extends JFrame{
 					}
 					else if(currentShip.vertical==false) {
 						currentShip.vertical=true;
-						if(Ypos>=30*currentShip.getLength()) {
+						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos+(30*(currentShip.getLength()-1)));
 							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
 							
 						}
 						repaint();
-						
+						System.out.println(currentShip.getY());
+						System.out.println(currentShip.getX());
 					}
 					
 					//System.out.println(Xpos+"\n");
@@ -291,7 +282,7 @@ public class GUI extends JFrame{
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					currentShip=null;
+					//currentShip=null;
 				}
 				
 			});
