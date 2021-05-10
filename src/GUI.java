@@ -236,7 +236,7 @@ public class GUI extends JFrame{
 						
 					if(currentShip.vertical==true) {	
 						currentShip.vertical=false;
-						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
+						if(Ypos>=currentShip.getY()*30 && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
 							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
 						}
@@ -244,7 +244,7 @@ public class GUI extends JFrame{
 					}
 					else if(currentShip.vertical==false) {
 						currentShip.vertical=true;
-						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
+						if(Xpos>=currentShip.getX()*30 && Xpos<=currentShip.getX()+30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos+(30*(currentShip.getLength()-1)));
 							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
 							
@@ -254,7 +254,7 @@ public class GUI extends JFrame{
 						System.out.println(currentShip.getX());
 					}
 					
-					//System.out.println(Xpos+"\n");
+					
 										
 					}
 				
