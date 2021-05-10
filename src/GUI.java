@@ -10,33 +10,44 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class GUI extends JFrame{
-	private HitBoard enemyBoard;
-	private FriendlyBoard yourBoard;
+	private HitBoard player1HitBoard,player2HitBoard;
+	private FriendlyBoard player1Board,player2Board;
 	private JButton PlaceShips;
 	private ImageIcon tempIcon;
 	private Image image;
-	private boolean enabled = true;
-	private Player player1,player2,currentPlayer;
+	private Player player1,player2,currentPlayer,enemyPlayer;
 	private Ship currentShip;
-	//button gia rotate ploiou
-			JButton rotateShip = new JButton("Rotate");
+	private	JButton rotateShip = new JButton("Rotate");
+	private JLabel hit,miss;
 	
 	public GUI(Player player1,Player player2){
 		this.player1 = player1;
 		this.player2 = player2;
-		//making your board(den kanei tipota pros to parwn mono sto deutero to antipalo board akoune ta buttons... logika tha ginei kapws alliws to board tou paikti)
-		yourBoard = new FriendlyBoard();
-		yourBoard.setBounds(50,50,300,300);
-		//making enemy board
-		enemyBoard = new HitBoard();
-		enemyBoard.setBounds(650,50,300,300);
+		currentPlayer= player1;
+		enemyPlayer = player2;
+		//making players boards
+		player1Board = new FriendlyBoard();
+		player1Board.setBounds(50,50,300,300);
+		player2Board = new FriendlyBoard();
+		player2Board.setBounds(50,50,300,300);
+		//making hit boards
+		player1HitBoard = new HitBoard();
+		player1HitBoard.setBounds(650,50,300,300);
+		player2HitBoard = new HitBoard();
+		player2HitBoard.setBounds(650,50,300,300);
+		
+		player2HitBoard.setVisible(false);
+		player2Board.setVisible(false);
 		
 		//stin arxi gia placement apo ta ploia
 		PlaceShips = new JButton("Place");
@@ -44,35 +55,55 @@ public class GUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//stamataei tous mouselisteners gia ploia placement
-				enabled=false;
+				if(currentPlayer == player2) {
+				player2Board.enabled = false;
 				PlaceShips.setVisible(false);
+				rotateShip.setVisible(false);
+				sizeset();
+				}
+				player1Board.enabled = false;
+				changeTurn();
+				currentPlayer.setPlacedShips(true);
 			}
 		});
+		ImageIcon hitimg = new ImageIcon(new ImageIcon("images\\hit.png").getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+		hit = new JLabel(hitimg);
+		hit.setBounds(400,200,150,150);
+		hit.setVisible(false);
 		
-		PlaceShips.setBounds(450,500,100,40);
+		ImageIcon missimg = new ImageIcon(new ImageIcon("images\\miss.png").getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+		miss = new JLabel(missimg);
+		miss.setBounds(400,200,150,150);
+		miss.setVisible(false);
+		
+		PlaceShips.setBounds(10,0,100,40);
 		
 		
+		rotateShip.setBounds(200,0,100,40);
 		
-		rotateShip.setBounds(450,80,100,40);
-		
-		
+		this.add(hit);
+		this.add(miss);
 		this.add(rotateShip);
-		
 		this.setLayout(null);
-		this.add(yourBoard);
-		this.add(enemyBoard);
+		this.add(player1Board);
+		this.add(player1HitBoard);
+		this.add(player2Board);
+		this.add(player2HitBoard);
 		this.add(PlaceShips);
 		this.setTitle("Battleships");
 		this.setVisible(true);
-		this.setSize(1000,600);
+		this.setSize(450,420);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 	
 	}
 	
-	
+	public void sizeset() {
+		this.setSize(1000,600);
+	}
 	//enemy Board
 	class HitBoard extends JPanel{
+		private boolean shipHit = false;
 		private JButton[][] buttons;
 		public HitBoard() {
 		setLayout(new GridLayout(10,10));
@@ -91,15 +122,37 @@ public class GUI extends JFrame{
 								//tipota endiaferon prws to parwn
 								buttons[i][j].setEnabled(false);
 								buttons[i][j].setBackground(Color.gray);
-								for(Ship ship: player1.getShips()) {
+								for(Ship ship: enemyPlayer.getShips()) {
 									if(ship.isHit(i, j)) {
 										buttons[i][j].setBackground(Color.red);
+										shipHit = true;
+										hit.setVisible(true);
 									}
 								}
-								yourBoard.repaint();
-								if(!player1.hasShips())
+								if(!shipHit)
+									miss.setVisible(true);
+								if(currentPlayer==player1)
+									player2Board.repaint();
+								else
+									player1Board.repaint();
+								if(!enemyPlayer.hasShips())
 									System.out.println("Game is over!");
-							}}}}	
+								//250 milisecond delay
+								new Timer().schedule( 
+								        new TimerTask() {
+								            @Override
+								            public void run() {
+								            	if(shipHit) 
+								            		hit.setVisible(false);
+								            	else
+								            		miss.setVisible(false);
+								            	shipHit=false;
+								            	changeTurn();
+								            }
+								        }, 
+								        250
+								);
+							}}}}
 			});
 			add(buttons[i][j]);
 			}
@@ -111,16 +164,18 @@ public class GUI extends JFrame{
 		
 	}
 	
-	class FriendlyBoard extends JPanel{
+	public class FriendlyBoard extends JPanel{
+		private boolean enabled = true;
 		@Override
 		public void paint(Graphics g) {
 			for(int i=0; i<10; i++) {
 				for(int j=0; j<10; j++) {
 					//conditions gia repaint
-					if(enemyBoard.getButton(i,j).getBackground()== Color.blue) {
+					if(currentPlayer==player1) {
+					if(player2HitBoard.getButton(i,j).getBackground()== Color.blue) {
 					g.setColor(Color.blue);
 					}
-					else if(enemyBoard.getButton(i,j).getBackground()== Color.red){
+					else if(player2HitBoard.getButton(i,j).getBackground()== Color.red){
 						g.setColor(Color.red);
 					}
 					else {
@@ -129,9 +184,24 @@ public class GUI extends JFrame{
 					g.fillRect(j*30, i*30, 30, 30);
 					g.setColor(Color.black);
 					g.drawRect(j*30, i*30, 30, 30);
+					}
+					else {
+						if(player1HitBoard.getButton(i,j).getBackground()== Color.blue) {
+							g.setColor(Color.blue);
+							}
+							else if(player1HitBoard.getButton(i,j).getBackground()== Color.red){
+								g.setColor(Color.red);
+							}
+							else {
+								g.setColor(Color.gray);
+							}
+							g.fillRect(j*30, i*30, 30, 30);
+							g.setColor(Color.black);
+							g.drawRect(j*30, i*30, 30, 30);
+					}
 				}
 			}
-			for(Ship ship: player1.getShips()) {
+			for(Ship ship: currentPlayer.getShips()) {
 				if(ship.vertical==true)
 			tempIcon = new ImageIcon("images\\" + ship.getName() + ".png");
 				else
@@ -155,14 +225,16 @@ public class GUI extends JFrame{
 
 					
 					
-					for(Ship ship:player1.getShips())
-					{	
+					for(Ship ship:currentPlayer.getShips())
+					{
 				//An o xristis kanei klik panw se kouti pou brisketai ploio tha epilegetai to ploio
 														//30(megethos koutiou)* twn arithmo twn koutiwn pou brisketai to ploio
 														//analoga me to megethos tou ploiou(length)
 					if((Xpos>=ship.getX() && Xpos<=ship.getX()+(30*ship.getLength()))
-							&& (Ypos>=ship.getY() && Ypos<=ship.getY()+30))
+							&& (Ypos>=ship.getY() && Ypos<=ship.getY()+30)) {
+						currentShip=ship;
 							System.out.println("Ship"+" "+Ypos);
+					}
 						else
 							System.out.println("no Ship");
 					
@@ -207,7 +279,7 @@ public class GUI extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e) {
 					if(enabled == true) {
-					for(Ship ship: player1.getShips()) {
+					for(Ship ship: currentPlayer.getShips()) {
 						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30) && e.getY()>=ship.getX() && e.getY()<=ship.getX() + (ship.getLength()*30)) {
 							currentShip = ship;
 						}
@@ -219,7 +291,7 @@ public class GUI extends JFrame{
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					
+					currentShip=null;
 				}
 				
 			});
@@ -253,4 +325,23 @@ public class GUI extends JFrame{
 				    return resizedImg;
 				}
 	}
+	private void changeTurn() {
+		if(currentPlayer == player2) {
+			player1HitBoard.setVisible(true);
+			player1Board.setVisible(true);
+			player2HitBoard.setVisible(false);
+			player2Board.setVisible(false);
+			currentPlayer = player1;
+			enemyPlayer = player2;
+			}
+			else {
+			player1HitBoard.setVisible(false);
+			player1Board.setVisible(false);
+			player2HitBoard.setVisible(true);
+			player2Board.setVisible(true);
+			currentPlayer = player2;
+			enemyPlayer = player1;
+			}
+	}
+	
 }

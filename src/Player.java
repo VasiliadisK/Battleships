@@ -1,7 +1,9 @@
+import javax.swing.*;
 
 public class Player {
 	private String name;
 	private Ship[] ships = new Ship[5];
+	private boolean placedShips = false;
 		
 		public Player(){
 			AircraftCarrier a = new AircraftCarrier(0,0,true,"AircraftCarrier",5);
@@ -16,10 +18,21 @@ public class Player {
 			ships[3] = s;
 			ships[4] = d;
 	}
-
+		
 		public Ship[] getShips() {
 			return ships;
 		}
+		
+		
+		public boolean isPlacedShips() {
+			return placedShips;
+		}
+
+		
+		public void setPlacedShips(boolean placedShips) {
+			this.placedShips = placedShips;
+		}
+
 		
 		public boolean hasShips() {
 			int counter = 0;
