@@ -19,6 +19,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/*
+X --------->Y
+^
+|	ταμπλο πλοιων 
+|
+|
+
+*/
+
+
 public class GUI extends JFrame{
 	private HitBoard player1HitBoard,player2HitBoard;
 	private FriendlyBoard player1Board,player2Board;
@@ -29,7 +39,7 @@ public class GUI extends JFrame{
 	private Ship currentShip;
 	private	JButton rotateShip = new JButton("Rotate");
 	private JLabel hit,miss;
-	
+//constructor 
 	public GUI(Player player1,Player player2){
 		this.player1 = player1;
 		this.player2 = player2;
@@ -219,12 +229,12 @@ public class GUI extends JFrame{
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					//+30 gia na kaluptei olo to block
-					int Ypos=e.getY();
-					int Xpos=e.getX();
-
-					System.out.println("Y:"+e.getY());
-					System.out.println("X:"+e.getX());
+					int Xpos=e.getY();//Gia na ginei katheta to X kai orizontia to Y
+					int Ypos=e.getX();
 					
+					
+					
+				
 				//An o xristis kanei klik panw se kouti pou brisketai ploio tha epilegetai to ploio
 														//30(megethos koutiou)* twn arithmo twn koutiwn pou brisketai to ploio
 														//analoga me to megethos tou ploiou(length)
@@ -234,24 +244,31 @@ public class GUI extends JFrame{
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						
-					if(currentShip.vertical==true) {	
+					if(currentShip.vertical==true) {
+					
 						currentShip.vertical=false;
-						if(Ypos>=currentShip.getY()*30 && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
-							currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
-							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
+						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
+							
+							if(currentShip.getY()<270 && currentShip.getY()+30*(currentShip.getLength()-1)<270) {	
+								currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
+								currentShip.move(currentShip.getX()/30, currentShip.getY()/30);
+						}else {
+							System.out.println("CANT ROTATE HERE");
 						}
+					
 						repaint();
+						}
+					
 					}
 					else if(currentShip.vertical==false) {
 						currentShip.vertical=true;
 						if(Xpos>=currentShip.getX()*30 && Xpos<=currentShip.getX()+30*currentShip.getLength()) {
 							currentShip.setYpos(Ypos+(30*(currentShip.getLength()-1)));
-							currentShip.move(currentShip.getY()/30, currentShip.getX()/30);
+							currentShip.move(currentShip.getX()/30, currentShip.getY()/30);
 							
 						}
 						repaint();
-						System.out.println(currentShip.getY());
-						System.out.println(currentShip.getX());
+						
 					}
 					
 					
@@ -291,11 +308,23 @@ public class GUI extends JFrame{
 				public void mouseDragged(MouseEvent e) {
 					if(enabled == true) {
 					if(currentShip!=null) {
-						if(e.getX()<300 && e.getY()<300 && e.getX()>=0 && e.getY()>=0) {
+					if(currentShip.vertical==true) {	
+						if(e.getX()<300 && e.getY()<300-30*(currentShip.getLength()-1) && e.getX()>=0 && e.getY()>=0) {
 						currentShip.move(e.getY()/30, e.getX()/30);
 						repaint();
 						}
 					}
+						//an to epilegmeno ploio einai orizontia den prepei na vgenei ektos tamplo
+						
+						if(currentShip.vertical==false)
+						{  	
+							if(e.getX()<300-30*(currentShip.getLength()-1) && e.getY()<300 && e.getX()>=0 && e.getY()>=0) {
+							currentShip.move(e.getY()/30, e.getX()/30);
+							repaint();
+							}	
+						}
+					}
+					
 				}
 				}
 
