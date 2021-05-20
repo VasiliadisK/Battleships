@@ -10,9 +10,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,7 +31,6 @@ X --------->Y
 
 */
 
-
 public class GUI extends JFrame{
 	private HitBoard player1HitBoard,player2HitBoard;
 	private FriendlyBoard player1Board,player2Board;
@@ -39,6 +41,8 @@ public class GUI extends JFrame{
 	private Ship currentShip;
 	private	JButton rotateShip = new JButton("Rotate");
 	private JLabel hit,miss;
+	private mainPanel mainPanel;
+	private int b = 0;
 //constructor 
 	public GUI(Player player1,Player player2){
 		this.player1 = player1;
@@ -50,11 +54,13 @@ public class GUI extends JFrame{
 		player1Board.setBounds(50,50,300,300);
 		player2Board = new FriendlyBoard();
 		player2Board.setBounds(50,50,300,300);
+		
 		//making hit boards
 		player1HitBoard = new HitBoard();
 		player1HitBoard.setBounds(650,50,300,300);
 		player2HitBoard = new HitBoard();
 		player2HitBoard.setBounds(650,50,300,300);
+		player1HitBoard.setVisible(false);
 		
 		player2HitBoard.setVisible(false);
 		player2Board.setVisible(false);
@@ -74,6 +80,10 @@ public class GUI extends JFrame{
 				player1Board.enabled = false;
 				changeTurn();
 				currentPlayer.setPlacedShips(true);
+				
+				if(b==0)
+					player2HitBoard.setVisible(false);
+				b++;
 			}
 		});
 		ImageIcon hitimg = new ImageIcon(new ImageIcon("images\\hit.png").getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
@@ -91,26 +101,46 @@ public class GUI extends JFrame{
 		
 		rotateShip.setBounds(200,0,100,40);
 		
-		this.add(hit);
-		this.add(miss);
-		this.add(rotateShip);
-		this.setLayout(null);
-		this.add(player1Board);
-		this.add(player1HitBoard);
-		this.add(player2Board);
-		this.add(player2HitBoard);
-		this.add(PlaceShips);
+		
+		mainPanel = new mainPanel();
+		
+		mainPanel.add(hit);
+		mainPanel.add(miss);
+		mainPanel.add(rotateShip);
+		mainPanel.setLayout(null);
+		mainPanel.add(player1Board);
+		mainPanel.add(player1HitBoard);
+		mainPanel.add(player2Board);
+		mainPanel.add(player2HitBoard);
+		mainPanel.add(PlaceShips);
+		
 		this.setTitle("Battleships");
 		this.setVisible(true);
-		this.setSize(450,420);
+		this.setSize(1000,600);
+		this.setContentPane(mainPanel);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-	
 	}
 	
 	public void sizeset() {
 		this.setSize(1000,600);
 	}
+	
+	//main Panel
+	class mainPanel extends JPanel{
+		@Override
+		  protected void paintComponent(Graphics g) {
+			Image bgImage = null;
+			try {                
+		          bgImage = ImageIO.read(new File("images\\background.png"));
+		       } catch (IOException ex) {
+		            // handle exception...
+		       }
+			Image scaledImage = bgImage.getScaledInstance(1000,600,Image.SCALE_SMOOTH);
+		    super.paintComponent(g);
+		        g.drawImage(scaledImage, 0, 0, null);
+		}
+	}
+	
 	//enemy Board
 	class HitBoard extends JPanel{
 		private boolean shipHit = false;
@@ -332,7 +362,7 @@ public class GUI extends JFrame{
 				public void mouseMoved(MouseEvent e) {}
 			});
 		}
-		
+	
 		//kanei resize to image gia na xwraei sta cell tou board(1 cell = 30x30)
 				private Image getScaledImage(Image srcImg, int w, int h){
 				    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -344,7 +374,9 @@ public class GUI extends JFrame{
 
 				    return resizedImg;
 				}
+				
 	}
+	
 	private void changeTurn() {
 		if(currentPlayer == player2) {
 			player1HitBoard.setVisible(true);
