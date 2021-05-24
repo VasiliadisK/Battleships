@@ -32,19 +32,41 @@ X --------->Y
 */
 
 public class GUI extends JFrame{
-	private HitBoard player1HitBoard,player2HitBoard;
-	private FriendlyBoard player1Board,player2Board;
-	private JButton PlaceShips;
-	private ImageIcon tempIcon;
-	private Image image;
-	private Player player1,player2,currentPlayer,enemyPlayer;
-	private Ship currentShip;
-	private	JButton rotateShip = new JButton("Rotate");
-	private JLabel hit,miss;
 	private mainPanel mainPanel;
-	private int b = 0;
 //constructor 
-	public GUI(Player player1,Player player2){
+	public GUI(){
+		mainPanel = new mainPanel();
+		
+		this.add(mainPanel);
+		this.setTitle("Battleships");
+		this.setVisible(true);
+		this.setSize(1000,600);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
+	public void sizeset() {
+		this.setSize(1000,600);
+	}
+	
+	//main Panel
+	class mainPanel extends JPanel{
+		 private int b = 0;
+		 private HitBoard player1HitBoard,player2HitBoard;
+		 private FriendlyBoard player1Board,player2Board;
+		 private JButton PlaceShips;
+		 private ImageIcon tempIcon;
+		 private Image image;
+		 private Player player1,player2,currentPlayer,enemyPlayer;
+		 private Ship currentShip;
+		 private JButton rotateShip = new JButton("Rotate");
+		 private JLabel hit,miss;
+		 private mainPanel thisPanel;
+		 
+		public mainPanel() {
+		thisPanel=this;
+		Player player1 = new Player();
+		Player player2 = new Player();
+		
 		this.player1 = player1;
 		this.player2 = player2;
 		currentPlayer= player1;
@@ -100,33 +122,29 @@ public class GUI extends JFrame{
 		
 		
 		rotateShip.setBounds(200,0,100,40);
+		JButton restart = new JButton("restart");
+		restart.setBackground(Color.orange);
+		restart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				restart(thisPanel);
+			}
+		});
+		restart.setBounds(450,0,100,30);
+		
+		add(restart);
+		add(hit);
+		add(miss);
+		add(rotateShip);
+		setLayout(null);
+		add(player1Board);
+		add(player1HitBoard);
+		add(player2Board);
+		add(player2HitBoard);
+		add(PlaceShips);
+		}
 		
 		
-		mainPanel = new mainPanel();
-		
-		mainPanel.add(hit);
-		mainPanel.add(miss);
-		mainPanel.add(rotateShip);
-		mainPanel.setLayout(null);
-		mainPanel.add(player1Board);
-		mainPanel.add(player1HitBoard);
-		mainPanel.add(player2Board);
-		mainPanel.add(player2HitBoard);
-		mainPanel.add(PlaceShips);
-		
-		this.setTitle("Battleships");
-		this.setVisible(true);
-		this.setSize(1000,600);
-		this.setContentPane(mainPanel);
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	}
-	
-	public void sizeset() {
-		this.setSize(1000,600);
-	}
-	
-	//main Panel
-	class mainPanel extends JPanel{
 		@Override
 		  protected void paintComponent(Graphics g) {
 			Image bgImage = null;
@@ -139,7 +157,8 @@ public class GUI extends JFrame{
 		    super.paintComponent(g);
 		        g.drawImage(scaledImage, 0, 0, null);
 		}
-	}
+		
+	
 	
 	//enemy Board
 	class HitBoard extends JPanel{
@@ -394,6 +413,13 @@ public class GUI extends JFrame{
 			currentPlayer = player2;
 			enemyPlayer = player1;
 			}
+	}
+	}
+	private void restart(mainPanel mainPanel) {
+		this.remove(mainPanel);
+		mainPanel newPanel = new mainPanel();
+		this.setContentPane(newPanel);
+		revalidate();
 	}
 	
 }

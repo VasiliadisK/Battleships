@@ -5,7 +5,7 @@ public class Main {
 		Player player1 = new Player();
 		Player player2 = new Player();
 		
-		new GUI(player1,player2);
+		new GUI();
 	}
 
 }
