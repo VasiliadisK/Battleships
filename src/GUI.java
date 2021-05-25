@@ -61,6 +61,8 @@ public class GUI extends JFrame{
 		 private JButton rotateShip = new JButton("Rotate");
 		 private JLabel hit,miss;
 		 private mainPanel thisPanel;
+		 private int btn = 0;
+		 private boolean killDestroyer = false;
 		 
 		public mainPanel() {
 		thisPanel=this;
@@ -132,6 +134,31 @@ public class GUI extends JFrame{
 		});
 		restart.setBounds(450,0,100,30);
 		
+		JButton doublehit = new JButton("DOUBLE");
+		doublehit.setBounds(500,500,100,40);
+		doublehit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btn = 1;
+			}
+		});
+		doublehit.setBackground(Color.pink);
+		
+		JButton kamikaze = new JButton("KAMIKAZE");
+		kamikaze.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btn = 2;
+			}
+			
+		});
+		kamikaze.setBounds(500,450,100,40);
+		kamikaze.setBackground(Color.pink);
+		
+		
+		
+		add(kamikaze);
+		add(doublehit);
 		add(restart);
 		add(hit);
 		add(miss);
@@ -184,20 +211,42 @@ public class GUI extends JFrame{
 								for(Ship ship: enemyPlayer.getShips()) {
 									if(ship.isHit(i, j)) {
 										buttons[i][j].setBackground(Color.red);
+										if(btn==2) {
+											if(ship.vertical) {
+												for(i=0; i<ship.getLength(); i++) {
+													buttons[ship.Xpos+i][j].setBackground(Color.red);
+													buttons[ship.Xpos+i][j].setEnabled(false);;
+												}
+											}
+											else {
+												for(j=0; j<ship.getLength(); j++)
+													buttons[i][ship.Ypos+j].setBackground(Color.red);
+													buttons[i][ship.Ypos+j].setEnabled(false);
+											}
+											killDestroyer = true;
+										}
 										shipHit = true;
 										hit.setVisible(true);
 									}
 								}
+								btn = 0;
 								if(!shipHit)
 									miss.setVisible(true);
-								if(currentPlayer==player1)
+								if(currentPlayer==player1) {
 									player2Board.repaint();
-								else
+									if(killDestroyer==true)
+										player1Board.repaint();
+								}
+								else {
 									player1Board.repaint();
+									if(killDestroyer==true)
+										player2Board.repaint();
+								}
 								if(!enemyPlayer.hasShips())
 									System.out.println("Game is over!");
+								
 								//250 milisecond delay
-								new Timer().schedule( 
+								new Timer().schedule(
 								        new TimerTask() {
 								            @Override
 								            public void run() {
@@ -206,12 +255,15 @@ public class GUI extends JFrame{
 								            	else
 								            		miss.setVisible(false);
 								            	shipHit=false;
+								            	if(btn!=1)
 								            	changeTurn();
+								            	else 
+								            		btn =0;
 								            }
-								        }, 
+								        },
 								        250
 								);
-							}}}}
+							}}}}				
 			});
 			add(buttons[i][j]);
 			}
@@ -231,6 +283,25 @@ public class GUI extends JFrame{
 				for(int j=0; j<10; j++) {
 					//conditions gia repaint
 					if(currentPlayer==player1) {
+						if(killDestroyer==true) {
+							for(Ship frShips: currentPlayer.getShips()) {
+								if(frShips.getName()=="Destroyer") {
+									if(frShips.vertical) {
+										for(int x=0; x<frShips.getLength(); x++) {
+											player2HitBoard.getButton(frShips.Xpos+x,frShips.Ypos).setBackground(Color.red);
+											player2HitBoard.getButton(frShips.Xpos+x,frShips.Ypos).setEnabled(false);
+										}
+									}
+									else {
+										for(int y=0; y<frShips.getLength(); y++) {
+											player2HitBoard.getButton(frShips.Xpos,frShips.Ypos+y).setBackground(Color.red);
+											player2HitBoard.getButton(frShips.Xpos,frShips.Ypos+y).setEnabled(false);
+										}
+									}
+								}
+							}
+							killDestroyer = false;
+						}
 					if(player2HitBoard.getButton(i,j).getBackground()== Color.blue) {
 					g.setColor(Color.blue);
 					}
