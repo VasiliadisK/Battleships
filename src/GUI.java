@@ -212,10 +212,11 @@ public class GUI extends JFrame{
 									if(ship.isHit(i, j)) {
 										buttons[i][j].setBackground(Color.red);
 										if(btn==2) {
+											ship.hp=0;
 											if(ship.vertical) {
 												for(i=0; i<ship.getLength(); i++) {
 													buttons[ship.Xpos+i][j].setBackground(Color.red);
-													buttons[ship.Xpos+i][j].setEnabled(false);;
+													buttons[ship.Xpos+i][j].setEnabled(false);
 												}
 											}
 											else {
@@ -261,7 +262,7 @@ public class GUI extends JFrame{
 								            		btn =0;
 								            }
 								        },
-								        250
+								        200
 								);
 							}}}}				
 			});
@@ -286,6 +287,7 @@ public class GUI extends JFrame{
 						if(killDestroyer==true) {
 							for(Ship frShips: currentPlayer.getShips()) {
 								if(frShips.getName()=="Destroyer") {
+									frShips.hp=0;
 									if(frShips.vertical) {
 										for(int x=0; x<frShips.getLength(); x++) {
 											player2HitBoard.getButton(frShips.Xpos+x,frShips.Ypos).setBackground(Color.red);
