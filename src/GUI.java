@@ -59,7 +59,9 @@ public class GUI extends JFrame{
 		 private mainPanel thisPanel;
 		 private int btn = 0;
 		 private boolean killDestroyer = false;
-		 
+		 private Ship damagedShip;
+			private int locationx;
+			private int locationy;
 		public mainPanel() {
 		thisPanel=this;
 		Player player1 = new Player();
@@ -151,7 +153,30 @@ public class GUI extends JFrame{
 		kamikaze.setBackground(Color.pink);
 		
 		
+		JButton heal = new JButton("Heal Ship");
+		heal.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btn = 3;
+			}
+			
+			
+		});
+		heal.setBounds(500,400,100,40);
+		heal.setBackground(Color.pink);
 		
+		JButton evade = new JButton("Evade");
+		evade.setBounds(500,350,100,40);
+		evade.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				btn = 4;
+			}
+		});
+		evade.setBackground(Color.pink);
+		
+		add(evade);
+		add(heal);
 		add(kamikaze);
 		add(doublehit);
 		add(restart);
@@ -186,6 +211,7 @@ public class GUI extends JFrame{
 	class HitBoard extends JPanel{
 		private boolean shipHit = false;
 		private JButton[][] buttons;
+		
 		public HitBoard() {
 		setLayout(new GridLayout(10,10));
 		buttons = new JButton[10][10];
@@ -200,12 +226,16 @@ public class GUI extends JFrame{
 					for(int i=0; i<10; i++) {
 						for(int j=0; j<10; j++) {
 							if(buttons[i][j]==e.getSource()) {
-								//tipota endiaferon prws to parwn
+								
 								buttons[i][j].setEnabled(false);
 								buttons[i][j].setBackground(Color.gray);
 								for(Ship ship: enemyPlayer.getShips()) {
 									if(ship.isHit(i, j)) {
-										buttons[i][j].setBackground(Color.red);
+											buttons[i][j].setBackground(Color.red);
+											ship.hp--;
+											damagedShip=ship;
+											locationx=i;
+											locationy=j;
 										if(btn==2) {
 											ship.hp=0;
 											if(ship.vertical) {
@@ -230,6 +260,7 @@ public class GUI extends JFrame{
 								if(!shipHit)
 									miss.setVisible(true);
 								if(currentPlayer==player1) {
+									
 									player2Board.repaint();
 									if(killDestroyer==true)
 										player1Board.repaint();
@@ -251,10 +282,13 @@ public class GUI extends JFrame{
 								            	else
 								            		miss.setVisible(false);
 								            	shipHit=false;
+								            	
 								            	if(btn!=1)
-								            	changeTurn();
+								            		changeTurn(); 
 								            	else 
 								            		btn =0;
+								           
+								            	
 								            }
 								        },
 								        200
@@ -301,6 +335,19 @@ public class GUI extends JFrame{
 							}
 							killDestroyer = false;
 						}
+						if(btn==3) {	
+			            	if(damagedShip.name==currentPlayer.getShip(1).getName())
+			            	{	
+			            		for(int k=currentPlayer.getShip(1).x;k<damagedShip.length;k++)
+			            		{
+			            			player1HitBoard.getButton(k,locationy).setBackground(Color.blue);
+			            			player1HitBoard.getButton(k,locationy).setEnabled(true);
+			            			
+			            		}
+			            		
+			            	}
+			            	btn=0;
+			            }	
 					if(player2HitBoard.getButton(i,j).getBackground()== Color.blue) {
 					g.setColor(Color.blue);
 					}
@@ -315,6 +362,39 @@ public class GUI extends JFrame{
 					g.drawRect(j*30, i*30, 30, 30);
 					}
 					else {
+						if(btn==3) {	
+			            	if(damagedShip.name==currentPlayer.getShip(1).getName())
+			            	{	
+			            		for(int k=currentPlayer.getShip(1).x;k<damagedShip.length;k++)
+			            		{
+			            			player2HitBoard.getButton(k,locationy).setBackground(Color.blue);
+			            			player2HitBoard.getButton(k,locationy).setEnabled(true);
+			            			
+			            		}
+			            		
+			            	}
+			            	btn=0;
+			            }
+						if(killDestroyer==true) {
+							for(Ship frShips: currentPlayer.getShips()) {
+								if(frShips.getName()=="Destroyer") {
+									frShips.hp=0;
+									if(frShips.vertical) {
+										for(int x=0; x<frShips.getLength(); x++) {
+											player1HitBoard.getButton(frShips.Xpos+x,frShips.Ypos).setBackground(Color.red);
+											player1HitBoard.getButton(frShips.Xpos+x,frShips.Ypos).setEnabled(false);
+										}
+									}
+									else {
+										for(int y=0; y<frShips.getLength(); y++) {
+											player1HitBoard.getButton(frShips.Xpos,frShips.Ypos+y).setBackground(Color.red);
+											player1HitBoard.getButton(frShips.Xpos,frShips.Ypos+y).setEnabled(false);
+										}
+									}
+								}
+							}
+							killDestroyer = false;
+						}
 						if(player1HitBoard.getButton(i,j).getBackground()== Color.blue) {
 							g.setColor(Color.blue);
 							}
@@ -368,11 +448,9 @@ public class GUI extends JFrame{
 						currentShip.vertical=false;
 						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
 							
-							if(currentShip.getY()<270 && currentShip.getY()+30*(currentShip.getLength()-1)<270) {	
+							if(currentShip.getY()<=270 && currentShip.getY()+30*(currentShip.getLength()-1)<=270) {	
 								currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
 								currentShip.move(currentShip.getX()/30, currentShip.getY()/30);
-						}else {
-							System.out.println("CANT ROTATE HERE");
 						}
 					
 						repaint();

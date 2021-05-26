@@ -23,6 +23,10 @@ public class Player {
 			return ships;
 		}
 		
+		public Ship getShip(int number) {
+			return ships[number];
+		}
+		
 		
 		public boolean isPlacedShips() {
 			return placedShips;
