@@ -233,9 +233,6 @@ public class GUI extends JFrame{
 									if(ship.isHit(i, j)) {
 											buttons[i][j].setBackground(Color.red);
 											ship.hp--;
-											damagedShip=ship;
-											locationx=i;
-											locationy=j;
 										if(btn==2) {
 											ship.hp=0;
 											if(ship.vertical) {
@@ -336,16 +333,15 @@ public class GUI extends JFrame{
 							killDestroyer = false;
 						}
 						if(btn==3) {	
-			            	if(damagedShip.name==currentPlayer.getShip(1).getName())
-			            	{	
-			            		for(int k=currentPlayer.getShip(1).x;k<damagedShip.length;k++)
+			            		
+			            		for(int k=currentPlayer.getShip(1).x;k<currentPlayer.getShip(1).length;k++)
 			            		{
-			            			player1HitBoard.getButton(k,locationy).setBackground(Color.blue);
-			            			player1HitBoard.getButton(k,locationy).setEnabled(true);
+			            			player1HitBoard.getButton(k,1).setBackground(Color.blue);
+			            			player1HitBoard.getButton(k,1).setEnabled(true);
 			            			
 			            		}
 			            		
-			            	}
+			            	
 			            	btn=0;
 			            }	
 					if(player2HitBoard.getButton(i,j).getBackground()== Color.blue) {
@@ -363,16 +359,15 @@ public class GUI extends JFrame{
 					}
 					else {
 						if(btn==3) {	
-			            	if(damagedShip.name==currentPlayer.getShip(1).getName())
-			            	{	
-			            		for(int k=currentPlayer.getShip(1).x;k<damagedShip.length;k++)
+			            	
+			            		for(int k=currentPlayer.getShip(1).x;k<currentPlayer.getShip(1).length;k++)
 			            		{
-			            			player2HitBoard.getButton(k,locationy).setBackground(Color.blue);
-			            			player2HitBoard.getButton(k,locationy).setEnabled(true);
+			            			player2HitBoard.getButton(k,1).setBackground(Color.blue);
+			            			player2HitBoard.getButton(k,1).setEnabled(true);
 			            			
 			            		}
 			            		
-			            	}
+			            	
 			            	btn=0;
 			            }
 						if(killDestroyer==true) {
