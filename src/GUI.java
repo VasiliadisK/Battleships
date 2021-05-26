@@ -44,10 +44,6 @@ public class GUI extends JFrame{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 	
-	public void sizeset() {
-		this.setSize(1000,600);
-	}
-	
 	//main Panel
 	class mainPanel extends JPanel{
 		 private int b = 0;
@@ -99,7 +95,6 @@ public class GUI extends JFrame{
 				player2Board.enabled = false;
 				PlaceShips.setVisible(false);
 				rotateShip.setVisible(false);
-				sizeset();
 				}
 				player1Board.enabled = false;
 				changeTurn();
@@ -220,17 +215,18 @@ public class GUI extends JFrame{
 												}
 											}
 											else {
-												for(j=0; j<ship.getLength(); j++)
+												for(j=0; j<ship.getLength(); j++) {
 													buttons[i][ship.Ypos+j].setBackground(Color.red);
 													buttons[i][ship.Ypos+j].setEnabled(false);
+												}
 											}
 											killDestroyer = true;
+											btn=0;
 										}
 										shipHit = true;
 										hit.setVisible(true);
 									}
 								}
-								btn = 0;
 								if(!shipHit)
 									miss.setVisible(true);
 								if(currentPlayer==player1) {
@@ -245,7 +241,6 @@ public class GUI extends JFrame{
 								}
 								if(!enemyPlayer.hasShips())
 									System.out.println("Game is over!");
-								
 								//250 milisecond delay
 								new Timer().schedule(
 								        new TimerTask() {
@@ -264,6 +259,8 @@ public class GUI extends JFrame{
 								        },
 								        200
 								);
+								if(btn==2)
+									btn = 0;
 							}}}}				
 			});
 			add(buttons[i][j]);
