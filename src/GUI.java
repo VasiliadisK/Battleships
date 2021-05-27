@@ -165,7 +165,7 @@ public class GUI extends JFrame{
 		heal.setBounds(500,400,100,40);
 		heal.setBackground(Color.pink);
 		
-		JButton evade = new JButton("Evade");
+		JButton evade = new JButton("Torpedo");
 		evade.setBounds(500,350,100,40);
 		evade.addActionListener(new ActionListener() {
 			@Override
@@ -226,9 +226,24 @@ public class GUI extends JFrame{
 					for(int i=0; i<10; i++) {
 						for(int j=0; j<10; j++) {
 							if(buttons[i][j]==e.getSource()) {
-								
+							
 								buttons[i][j].setEnabled(false);
 								buttons[i][j].setBackground(Color.gray);
+								
+								if(btn==4)
+								{
+									for(int k=0;k<10;k++) {
+										buttons[i][k].setBackground(Color.gray);
+										buttons[i][k].setEnabled(false);
+										for(Ship ship: enemyPlayer.getShips()) {
+											if(ship.isHit(i, k))
+												buttons[i][k].setBackground(Color.red);
+								
+									
+									}
+								}
+									
+								}
 								for(Ship ship: enemyPlayer.getShips()) {
 									if(ship.isHit(i, j)) {
 											buttons[i][j].setBackground(Color.red);
@@ -250,6 +265,7 @@ public class GUI extends JFrame{
 											killDestroyer = true;
 											btn=0;
 										}
+										
 										shipHit = true;
 										hit.setVisible(true);
 									}
@@ -292,7 +308,11 @@ public class GUI extends JFrame{
 								);
 								if(btn==2)
 									btn = 0;
-							}}}}				
+							}
+							
+						}
+						
+						}}				
 			});
 			add(buttons[i][j]);
 			}
@@ -363,7 +383,7 @@ public class GUI extends JFrame{
 			            		for(int k=currentPlayer.getShip(1).x;k<currentPlayer.getShip(1).length;k++)
 			            		{
 			            			player2HitBoard.getButton(k,1).setBackground(Color.blue);
-			            			player2HitBoard.getButton(k,1).setEnabled(true);
+			            			player2HitBoard.getButton(k,1)	.setEnabled(true);
 			            			
 			            		}
 			            		
