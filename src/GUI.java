@@ -32,16 +32,52 @@ X --------->Y
 */
 
 public class GUI extends JFrame{
-	private mainPanel mainPanel;
+	private mainPanel mainPanel = new mainPanel();
+	private startScreen startScreen;;
 //constructor 
 	public GUI(){
-		mainPanel = new mainPanel();
 		
-		this.add(mainPanel);
+		
+		startScreen = new startScreen();
+		
+		this.add(startScreen);
 		this.setTitle("Battleships");
 		this.setVisible(true);
 		this.setSize(1000,600);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
+	private void startTheGame() {
+		startScreen.setVisible(false);
+		this.add(mainPanel);
+		this.setContentPane(mainPanel);
+	}
+	
+	class startScreen extends JPanel{
+		@Override
+		  protected void paintComponent(Graphics g) {
+			Image startImage = null;
+			try {                
+				startImage = ImageIO.read(new File("images\\StartScreen.jpg"));
+		       } catch (IOException ex) {
+		            // handle exception...
+		       }
+			Image scaledImage = startImage.getScaledInstance(1000,565,Image.SCALE_SMOOTH);
+		    super.paintComponent(g);
+		        g.drawImage(scaledImage, 0, 0, null);
+		}
+		public startScreen() {
+		JButton startGame = new JButton("START GAME");
+		startGame.setBounds(300,300,100,40);
+		startGame.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				startTheGame();
+			}
+			
+		});
+		add(startGame);
+		}
 	}
 	
 	//main Panel
@@ -242,7 +278,7 @@ public class GUI extends JFrame{
 									
 									}
 								}
-									
+									btn=0;
 								}
 								for(Ship ship: enemyPlayer.getShips()) {
 									if(ship.isHit(i, j)) {
