@@ -33,13 +33,17 @@ X --------->Y
 
 public class GUI extends JFrame{
 	private mainPanel mainPanel = new mainPanel();
-	private startScreen startScreen;;
-//constructor 
+	private startScreen startScreen;
+	private Player winner;
+	private mainPanel thisPanel;
+	private JFrame frame;
+//constructor
 	public GUI(){
-		
+		frame=this;
 		
 		startScreen = new startScreen();
 		
+		this.setResizable(false);
 		this.add(startScreen);
 		this.setTitle("Battleships");
 		this.setVisible(true);
@@ -68,7 +72,7 @@ public class GUI extends JFrame{
 		}
 		public startScreen() {
 		JButton startGame = new JButton("START GAME");
-		startGame.setBounds(300,300,100,40);
+		startGame.setBounds(550,350,200,80);
 		startGame.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -76,6 +80,8 @@ public class GUI extends JFrame{
 			}
 			
 		});
+		startGame.setBackground(Color.cyan);
+		setLayout(null);
 		add(startGame);
 		}
 	}
@@ -88,16 +94,33 @@ public class GUI extends JFrame{
 		 private JButton PlaceShips;
 		 private ImageIcon tempIcon;
 		 private Image image;
-		 private Player player1,player2,currentPlayer,enemyPlayer;
+		 private Player player1,player2,enemyPlayer,currentPlayer;
 		 private Ship currentShip;
 		 private JButton rotateShip = new JButton("Rotate");
 		 private JLabel hit,miss;
-		 private mainPanel thisPanel;
-		 private int btn = 0;
+		 
+		 public Player getPlayer1() {
+			return player1;
+		}
+
+
+		public Player getPlayer2() {
+			return player2;
+		}
+
+
+		public Player getCurrentPlayer() {
+			return currentPlayer;
+		}
+
+		private int btn = 0;
 		 private boolean killDestroyer = false;
 		 private Ship damagedShip;
-			private int locationx;
-			private int locationy;
+		 private int locationx;
+		 private int locationy;
+		 private Ship selectedShip = null;
+		 private JButton doublehit,kamikaze,heal,torpedo;
+		 
 		public mainPanel() {
 		thisPanel=this;
 		Player player1 = new Player();
@@ -167,20 +190,22 @@ public class GUI extends JFrame{
 		});
 		restart.setBounds(450,0,100,30);
 		
-		JButton doublehit = new JButton("DOUBLE");
+		doublehit = new JButton("DOUBLE");
 		doublehit.setBounds(500,500,100,40);
 		doublehit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				currentPlayer.setHasDouble(false);
 				btn = 1;
 			}
 		});
 		doublehit.setBackground(Color.pink);
 		
-		JButton kamikaze = new JButton("KAMIKAZE");
+		kamikaze = new JButton("KAMIKAZE");
 		kamikaze.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				currentPlayer.setHasKamikaze(false);
 				btn = 2;
 			}
 			
@@ -189,10 +214,11 @@ public class GUI extends JFrame{
 		kamikaze.setBackground(Color.pink);
 		
 		
-		JButton heal = new JButton("Heal Ship");
+		heal = new JButton("Heal Ship");
 		heal.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				currentPlayer.setHasHeal(false);
 				btn = 3;
 			}
 			
@@ -201,17 +227,18 @@ public class GUI extends JFrame{
 		heal.setBounds(500,400,100,40);
 		heal.setBackground(Color.pink);
 		
-		JButton evade = new JButton("Torpedo");
-		evade.setBounds(500,350,100,40);
-		evade.addActionListener(new ActionListener() {
+		torpedo = new JButton("Torpedo");
+		torpedo.setBounds(500,350,100,40);
+		torpedo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				currentPlayer.setHasTorpedo(false);
 				btn = 4;
 			}
 		});
-		evade.setBackground(Color.pink);
+		torpedo.setBackground(Color.pink);
 		
-		add(evade);
+		add(torpedo);
 		add(heal);
 		add(kamikaze);
 		add(doublehit);
@@ -319,8 +346,6 @@ public class GUI extends JFrame{
 									if(killDestroyer==true)
 										player2Board.repaint();
 								}
-								if(!enemyPlayer.hasShips())
-									System.out.println("Game is over!");
 								//250 milisecond delay
 								new Timer().schedule(
 								        new TimerTask() {
@@ -336,7 +361,6 @@ public class GUI extends JFrame{
 								            		changeTurn(); 
 								            	else 
 								            		btn =0;
-								           
 								            	
 								            }
 								        },
@@ -362,8 +386,10 @@ public class GUI extends JFrame{
 	
 	public class FriendlyBoard extends JPanel{
 		private boolean enabled = true;
+		private int hit;
 		@Override
 		public void paint(Graphics g) {
+			hit=0;
 			for(int i=0; i<10; i++) {
 				for(int j=0; j<10; j++) {
 					//conditions gia repaint
@@ -450,6 +476,7 @@ public class GUI extends JFrame{
 							g.setColor(Color.blue);
 							}
 							else if(player1HitBoard.getButton(i,j).getBackground()== Color.red){
+								hit++;
 								g.setColor(Color.red);
 							}
 							else {
@@ -461,6 +488,11 @@ public class GUI extends JFrame{
 					}
 				}
 			}
+			
+			if(hit==17) {
+				GameOver();	
+			}
+			
 			for(Ship ship: currentPlayer.getShips()) {
 				if(ship.vertical==true)
 			tempIcon = new ImageIcon("images\\" + ship.getName() + ".png");
@@ -474,16 +506,12 @@ public class GUI extends JFrame{
 			Graphics2D g2d = (Graphics2D) g.create();
 			g2d.drawImage(image,ship.getY(),ship.getX(),this);
 			}
-			
 			addMouseListener(new MouseListener(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					//+30 gia na kaluptei olo to block
 					int Xpos=e.getY();//Gia na ginei katheta to X kai orizontia to Y
 					int Ypos=e.getX();
-					
-					
-					
 				
 				//An o xristis kanei klik panw se kouti pou brisketai ploio tha epilegetai to ploio
 														//30(megethos koutiou)* twn arithmo twn koutiwn pou brisketai to ploio
@@ -493,33 +521,33 @@ public class GUI extends JFrame{
 
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						
-					if(currentShip.vertical==true) {
+						if(selectedShip!=null) {
+					if(selectedShip.vertical==true) {
 					
-						currentShip.vertical=false;
-						if(Ypos>=currentShip.getY() && Ypos<=currentShip.getY()+30*currentShip.getLength()) {
+						selectedShip.vertical=false;
+						if(Ypos>=selectedShip.getY() && Ypos<=selectedShip.getY()+30*selectedShip.getLength()) {
 							
-							if(currentShip.getY()<=270 && currentShip.getY()+30*(currentShip.getLength()-1)<=270) {	
-								currentShip.setYpos(Ypos-(30*(currentShip.getLength()-1)));
-								currentShip.move(currentShip.getX()/30, currentShip.getY()/30);
+							if(selectedShip.getY()<=270 && selectedShip.getY()+30*(selectedShip.getLength()-1)<=270) {	
+								selectedShip.setYpos(Ypos-(30*(selectedShip.getLength()-1)));
+								selectedShip.move(selectedShip.getX()/30, selectedShip.getY()/30);
 						}
 					
 						repaint();
 						}
 					
 					}
-					else if(currentShip.vertical==false) {
-						currentShip.vertical=true;
-						if(Xpos>=currentShip.getX()*30 && Xpos<=currentShip.getX()+30*currentShip.getLength()) {
-							currentShip.setYpos(Ypos+(30*(currentShip.getLength()-1)));
-							currentShip.move(currentShip.getX()/30, currentShip.getY()/30);
+					else if(selectedShip.vertical==false) {
+						selectedShip.vertical=true;
+						if(Xpos>=selectedShip.getX()*30 && Xpos<=selectedShip.getX()+30*selectedShip.getLength()) {
+							selectedShip.setYpos(Ypos+(30*(selectedShip.getLength()-1)));
+							selectedShip.move(selectedShip.getX()/30, selectedShip.getY()/30);
 							
 						}
 						repaint();
 						
 					}
 					
-					
+						}
 										
 					}
 				
@@ -536,8 +564,17 @@ public class GUI extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					if(enabled == true) {
 					for(Ship ship: currentPlayer.getShips()) {
+						if(ship.vertical==true) {
 						if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY()+30) && e.getY()>=ship.getX() && e.getY()<=ship.getX() + (ship.getLength()*30)) {
 							currentShip = ship;
+							selectedShip = ship;
+						}
+					}
+						if(ship.vertical==false) {
+							if ((e.getX()>=ship.getY()) && (e.getX()<=ship.getY() + (ship.getLength()*30)) && e.getY()>=ship.getX() && e.getY()<=ship.getX() + 30) {
+								currentShip = ship;
+								selectedShip = ship;
+							}
 						}
 					}
 				}
@@ -547,7 +584,7 @@ public class GUI extends JFrame{
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					//currentShip=null;
+					currentShip=null;
 				}
 				
 			});
@@ -569,7 +606,7 @@ public class GUI extends JFrame{
 							if(e.getX()<300-30*(currentShip.getLength()-1) && e.getY()<300 && e.getX()>=0 && e.getY()>=0) {
 							currentShip.move(e.getY()/30, e.getX()/30);
 							repaint();
-							}	
+							}
 						}
 					}
 					
@@ -612,8 +649,89 @@ public class GUI extends JFrame{
 			currentPlayer = player2;
 			enemyPlayer = player1;
 			}
+		
+		
+		if(currentPlayer.hasDouble==true)
+			doublehit.setEnabled(true);
+		else
+			doublehit.setEnabled(false);
+		
+		if(currentPlayer.hasKamikaze==true)
+			kamikaze.setEnabled(true);
+		else
+			kamikaze.setEnabled(false);
+		
+		if(currentPlayer.hasHeal==true)
+			heal.setEnabled(true);
+		else
+			heal.setEnabled(false);
+		
+		if(currentPlayer.hasTorpedo==true)
+			torpedo.setEnabled(true);
+		else
+			torpedo.setEnabled(false);
 	}
+	
 	}
+	
+	
+	class GameOverScreen extends JPanel{
+		GameOverScreen gameover;
+		@Override
+		  protected void paintComponent(Graphics g) {
+			Image gameOverImage = null;
+			try {
+				if(winner==mainPanel.getPlayer1())
+				gameOverImage = ImageIO.read(new File("images\\P1gameOverScreen.jpg"));
+				else 
+					gameOverImage = ImageIO.read(new File("images\\P2gameOverScreen.jpg"));
+		       } catch (IOException ex) {
+		            // handle exception...
+		       }
+			Image scaledImage = gameOverImage.getScaledInstance(1000,565,Image.SCALE_SMOOTH);
+		    super.paintComponent(g);
+		        g.drawImage(scaledImage, 0, 0, null);
+		        
+		        addMouseListener(new MouseListener() {
+
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+					}
+					@Override
+					public void mouseEntered(MouseEvent arg0) {}
+					@Override
+					public void mouseExited(MouseEvent arg0) {}
+					@Override
+					public void mousePressed(MouseEvent arg0) {
+						frame.remove(gameover);
+						mainPanel newPanel = new mainPanel();
+						frame.setContentPane(newPanel);
+						frame.revalidate();
+					}
+					@Override
+					public void mouseReleased(MouseEvent arg0) {}
+				});
+		}
+		
+		public GameOverScreen() {
+			gameover=this;
+		}
+	}
+	
+	
+	private void GameOver() {
+		if(thisPanel.getCurrentPlayer()==thisPanel.getPlayer2())
+			winner = thisPanel.getPlayer1();
+		else
+			winner = thisPanel.getPlayer1();
+		frame.remove(thisPanel);
+		GameOverScreen gameOver = new GameOverScreen();
+		frame.add(gameOver);
+		this.setContentPane(gameOver);
+		revalidate();
+	}
+	
+	
 	private void restart(mainPanel mainPanel) {
 		this.remove(mainPanel);
 		mainPanel newPanel = new mainPanel();
