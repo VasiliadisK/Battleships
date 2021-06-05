@@ -1,5 +1,5 @@
 
-public abstract class Ship {
+public  class Ship {
 	
 	 int hp;
 	 int length;

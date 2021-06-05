@@ -7,11 +7,11 @@ public class Player {
 	boolean hasDouble,hasHeal,hasTorpedo,hasKamikaze;
 	
 		public Player(){
-			AircraftCarrier a = new AircraftCarrier(0,0,true,"AircraftCarrier",5);
-			Battleship b = new Battleship(0,1,true,"Battleship",4);
-			Cruiser c = new Cruiser(0,2,true,"Cruiser",3);
-			Submarine s = new Submarine(0,3,true,"Submarine",3);
-			Destroyer d = new Destroyer(0,4,true,"Destroyer",2);
+			Ship a = new Ship(0,0,true,"AircraftCarrier",5);
+			Ship b = new Ship(0,1,true,"Battleship",4);
+			Ship c = new Ship(0,2,true,"Cruiser",3);
+			Ship s = new Ship(0,3,true,"Submarine",3);
+			Ship d = new Ship(0,4,true,"Destroyer",2);
 			hasDouble = hasHeal = hasTorpedo = hasKamikaze = true;
 			
 			ships[0] = a;
