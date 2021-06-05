@@ -430,6 +430,7 @@ public class GUI extends JFrame{
 					g.setColor(Color.blue);
 					}
 					else if(player2HitBoard.getButton(i,j).getBackground()== Color.red){
+						hit++;
 						g.setColor(Color.red);
 					}
 					else {
@@ -681,7 +682,7 @@ public class GUI extends JFrame{
 		  protected void paintComponent(Graphics g) {
 			Image gameOverImage = null;
 			try {
-				if(winner==mainPanel.getPlayer1())
+				if(winner==thisPanel.getPlayer1())
 				gameOverImage = ImageIO.read(new File("images\\P1gameOverScreen.jpg"));
 				else 
 					gameOverImage = ImageIO.read(new File("images\\P2gameOverScreen.jpg"));
@@ -723,7 +724,7 @@ public class GUI extends JFrame{
 		if(thisPanel.getCurrentPlayer()==thisPanel.getPlayer2())
 			winner = thisPanel.getPlayer1();
 		else
-			winner = thisPanel.getPlayer1();
+			winner = thisPanel.getPlayer2();
 		frame.remove(thisPanel);
 		GameOverScreen gameOver = new GameOverScreen();
 		frame.add(gameOver);
