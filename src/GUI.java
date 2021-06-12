@@ -37,7 +37,7 @@ public class GUI extends JFrame{
 	private Player winner;
 	private mainPanel thisPanel;
 	private JFrame frame;
-//constructor
+//constructor 
 	public GUI(){
 		frame=this;
 		
@@ -57,6 +57,8 @@ public class GUI extends JFrame{
 		this.setContentPane(mainPanel);
 	}
 	
+	
+	//first Screen
 	class startScreen extends JPanel{
 		@Override
 		  protected void paintComponent(Graphics g) {
@@ -190,6 +192,8 @@ public class GUI extends JFrame{
 		});
 		restart.setBounds(450,0,100,30);
 		
+		
+		//btn gets an integer based on which ability is pressed
 		doublehit = new JButton("DOUBLE");
 		doublehit.setBounds(500,500,100,40);
 		doublehit.addActionListener(new ActionListener() {
@@ -255,6 +259,7 @@ public class GUI extends JFrame{
 		}
 		
 		
+		//
 		@Override
 		  protected void paintComponent(Graphics g) {
 			Image bgImage = null;
@@ -270,7 +275,7 @@ public class GUI extends JFrame{
 		
 	
 	
-	//enemy Board
+	//Hit Board consists of 100 buttons
 	class HitBoard extends JPanel{
 		private boolean shipHit = false;
 		private JButton[][] buttons;
@@ -346,7 +351,7 @@ public class GUI extends JFrame{
 									if(killDestroyer==true)
 										player2Board.repaint();
 								}
-								//250 milisecond delay
+								//changes turn(with a 200ms delay) every button press unless double hit is pressed
 								new Timer().schedule(
 								        new TimerTask() {
 								            @Override
@@ -384,6 +389,8 @@ public class GUI extends JFrame{
 		
 	}
 	
+	
+	//your Board with your ships that you placed
 	public class FriendlyBoard extends JPanel{
 		private boolean enabled = true;
 		private int hit;
@@ -394,6 +401,7 @@ public class GUI extends JFrame{
 				for(int j=0; j<10; j++) {
 					//conditions gia repaint
 					if(currentPlayer==player1) {
+						//apo edw ginete i kamikaze leitourgia
 						if(killDestroyer==true) {
 							for(Ship frShips: currentPlayer.getShips()) {
 								if(frShips.getName()=="Destroyer") {
@@ -422,7 +430,6 @@ public class GUI extends JFrame{
 			            			player1HitBoard.getButton(k,1).setEnabled(true);
 			            			
 			            		}
-			            		
 			            	
 			            	btn=0;
 			            }	
@@ -490,8 +497,9 @@ public class GUI extends JFrame{
 				}
 			}
 			
+			//17 einai ta sunolika koutia 
 			if(hit==17) {
-				GameOver();	
+				GameOver();
 			}
 			
 			for(Ship ship: currentPlayer.getShips()) {
@@ -652,6 +660,7 @@ public class GUI extends JFrame{
 			}
 		
 		
+		//kanei disable ta koumpia abilities
 		if(currentPlayer.hasDouble==true)
 			doublehit.setEnabled(true);
 		else
